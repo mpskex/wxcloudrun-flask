@@ -20,7 +20,7 @@ from os import environ
 
 SITE_NAME = environ['BACKEND']
 
-@app.route('/api/chat', methods=['POST'])
+@app.route('/api/chat', methods=['POST', 'GET'])
 def send():
     # signature = request.args.get("signature", "")
     # timestamp = request.args.get("timestamp", "")
@@ -31,6 +31,9 @@ def send():
     #     check_signature(TOKEN, signature, timestamp, nonce)
     # except InvalidSignatureException:
     #     abort(403)
+    if request.method == "GET":
+        echo_str = request.args.get("echostr", "")
+        return echo_str
     snd_msg = parse_message(request.data)
     print('snd_msg:\t', snd_msg)
     # resp = get(f'http://{SITE_NAME}/api/stable/{snd_msg.source}/{snd_msg.content}').content
