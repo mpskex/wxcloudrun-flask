@@ -1,32 +1,41 @@
 from datetime import datetime
 from flask import render_template, request, jsonify
 from run import app
+import os
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid
 from wxcloudrun.model import Counters
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
-from wechatpy import parse_message, replies
-import xmltodict
-import time
+from wechatpy import parse_message, create_reply
+from wechatpy.utils import check_signature
+from wechatpy.exceptions import (
+    InvalidSignatureException,
+    InvalidAppIdException,
+)
 from requests import get
 from os import environ
+
+# TOKEN = os.getenv("WECHAT_TOKEN", "123456")
+# AES_KEY = os.getenv("WECHAT_AES_KEY", "")
+# APPID = os.getenv("WECHAT_APPID", "")
 
 SITE_NAME = environ['BACKEND']
 
 @app.route('/api/chat', methods=['POST'])
 def send():
-    print(request.data)
+    # signature = request.args.get("signature", "")
+    # timestamp = request.args.get("timestamp", "")
+    # nonce = request.args.get("nonce", "")
+    # encrypt_type = request.args.get("encrypt_type", "raw")
+    # msg_signature = request.args.get("msg_signature", "")
+    # try:
+    #     check_signature(TOKEN, signature, timestamp, nonce)
+    # except InvalidSignatureException:
+    #     abort(403)
     snd_msg = parse_message(request.body)
-    sndr_id = snd_msg['FromUserName']
-    rcvr_id = snd_msg['FromUserName']
-    print(snd_msg['MsgType'])
-    snd_ctnt = snd_msg['Content']
     print('snd_msg:\t', snd_msg)
-    resp = get(f'http://{SITE_NAME}/api/stable/{sndr_id}/{snd_ctnt}').content
+    resp = get(f'http://{SITE_NAME}/api/stable/{snd_msg.source}/{snd_msg.content}').content
     print('resp:\t', resp)
-    reply = replies.TextReply()
-    reply.source = rcvr_id
-    reply.target = sndr_id
-    reply.content = resp
+    reply = create_reply(resp, snd_msg)
     return reply.render()
 
 
