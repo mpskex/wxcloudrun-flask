@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import render_template, request
+from flask import render_template, request, jsonify
 from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid
 from wxcloudrun.model import Counters
@@ -11,9 +11,9 @@ from os import environ
 
 SITE_NAME = environ['BACKEND']
 
-@app.route('/api')
+@app.route('/api/chat', methods=['POST'])
 def send():
-    snd_msg = xmltodict.parse(request.data)
+    snd_msg = request.json
     sndr_id = snd_msg['FromUserName']
     rcvr_id = snd_msg['FromUserName']
     print(snd_msg['MsgType'])
@@ -21,13 +21,13 @@ def send():
     print('snd_msg:\t', snd_msg)
     resp = get(f'{SITE_NAME}/api/stable/{sndr_id}/{snd_ctnt}').content
     print('resp:\t', resp)
-    resp = xmltodict.unparse({
+    resp = {
         'ToUserName': sndr_id,
         'FromUserName': rcvr_id,
         'CreateTime': time.time(),
-        'MsgType': '![CDATA[text]]',
-        'Content': f'![CDATA[{resp}]]',
-    })
+        'MsgType': 'text',
+        'Content': resp,
+    }
     return resp
 
 
