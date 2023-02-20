@@ -12,13 +12,13 @@ from wechatpy.exceptions import (
     InvalidAppIdException,
 )
 from requests import get
-from os import environ
+from os import getenv
 
 # TOKEN = os.getenv("WECHAT_TOKEN", "123456")
 # AES_KEY = os.getenv("WECHAT_AES_KEY", "")
 # APPID = os.getenv("WECHAT_APPID", "")
 
-SITE_NAME = environ['BACKEND']
+SITE_NAME = getenv('BACKEND', '10.1.1.105')
 
 @app.route('/api/chat', methods=['POST', 'GET'])
 def send():
@@ -33,7 +33,10 @@ def send():
     #     abort(403)
     if request.method == "GET":
         return ""
-    snd_msg = parse_message(request.data)
+    try:
+        snd_msg = parse_message(request.data)
+    except KeyError:
+        return ""
     print('snd_msg:\t', snd_msg)
     # resp = get(f'http://{SITE_NAME}/api/stable/{snd_msg.source}/{snd_msg.content}').content
     resp = "You said: " + snd_msg.content

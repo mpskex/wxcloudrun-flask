@@ -1,12 +1,12 @@
-from os import environ, makedirs
+from os import environ, makedirs, getenv
 import configparser
 
-vpn_ip = environ['WG_VPN_IP']
-pri_key = environ['WG_PRI_KEY']
-pub_key = environ['WG_PUB_KEY']
-local_ip = environ['WG_ALLOW_IP']
-dns = environ['WG_DNS']
-endpoint = environ['WG_END_POINT']
+vpn_ip = getenv('WG_VPN_IP', '')
+pri_key = getenv('WG_PRI_KEY', '')
+pub_key = getenv('WG_PUB_KEY', '')
+local_ip = getenv('WG_ALLOW_IP', '')
+dns = getenv('WG_DNS', '')
+endpoint = getenv('WG_END_POINT', '')
 
 config = configparser.ConfigParser()
 config.optionxform = str
