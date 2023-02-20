@@ -4,6 +4,31 @@ from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid
 from wxcloudrun.model import Counters
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
+import xmltodict
+import time
+from requests import get
+from os import environ
+
+SITE_NAME = environ['BACKEND']
+
+@app.route('/api')
+def send():
+    snd_msg = xmltodict.parse(request.data)
+    sndr_id = snd_msg['FromUserName']
+    rcvr_id = snd_msg['FromUserName']
+    print(snd_msg['MsgType'])
+    snd_ctnt = snd_msg['Content']
+    print('snd_msg:\t', snd_msg)
+    resp = get(f'{SITE_NAME}/api/stable/{sndr_id}/{snd_ctnt}').content
+    print('resp:\t', resp)
+    resp = xmltodict.unparse({
+        'ToUserName': sndr_id,
+        'FromUserName': rcvr_id,
+        'CreateTime': time.time(),
+        'MsgType': '![CDATA[text]]',
+        'Content': f'![CDATA[{resp}]]',
+    })
+    return resp
 
 
 @app.route('/')
