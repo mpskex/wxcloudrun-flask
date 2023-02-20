@@ -4,6 +4,7 @@ from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid
 from wxcloudrun.model import Counters
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
+from wechatpy import parse_message, replies
 import xmltodict
 import time
 from requests import get
@@ -13,22 +14,20 @@ SITE_NAME = environ['BACKEND']
 
 @app.route('/api/chat', methods=['POST'])
 def send():
-    snd_msg = request.json
+    print(request.data)
+    snd_msg = parse_message(request.body)
     sndr_id = snd_msg['FromUserName']
     rcvr_id = snd_msg['FromUserName']
     print(snd_msg['MsgType'])
     snd_ctnt = snd_msg['Content']
     print('snd_msg:\t', snd_msg)
-    resp = get(f'{SITE_NAME}/api/stable/{sndr_id}/{snd_ctnt}').content
+    resp = get(f'http://{SITE_NAME}/api/stable/{sndr_id}/{snd_ctnt}').content
     print('resp:\t', resp)
-    resp = {
-        'ToUserName': sndr_id,
-        'FromUserName': rcvr_id,
-        'CreateTime': time.time(),
-        'MsgType': 'text',
-        'Content': resp,
-    }
-    return resp
+    reply = replies.TextReply()
+    reply.source = rcvr_id
+    reply.target = sndr_id
+    reply.content = resp
+    return reply.render()
 
 
 @app.route('/')
