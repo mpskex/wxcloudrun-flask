@@ -33,7 +33,8 @@ def send():
     #     abort(403)
     snd_msg = parse_message(request.data)
     print('snd_msg:\t', snd_msg)
-    resp = get(f'http://{SITE_NAME}/api/stable/{snd_msg.source}/{snd_msg.content}').content
+    # resp = get(f'http://{SITE_NAME}/api/stable/{snd_msg.source}/{snd_msg.content}').content
+    resp = "You said: " + snd_msg.content
     print('resp:\t', resp)
     reply = create_reply(resp, snd_msg)
     return reply.render()
