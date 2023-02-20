@@ -32,8 +32,7 @@ def send():
     # except InvalidSignatureException:
     #     abort(403)
     if request.method == "GET":
-        echo_str = request.args.get("echostr", "")
-        return echo_str
+        return ""
     snd_msg = parse_message(request.data)
     print('snd_msg:\t', snd_msg)
     # resp = get(f'http://{SITE_NAME}/api/stable/{snd_msg.source}/{snd_msg.content}').content
