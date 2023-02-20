@@ -31,7 +31,7 @@ def send():
     #     check_signature(TOKEN, signature, timestamp, nonce)
     # except InvalidSignatureException:
     #     abort(403)
-    snd_msg = parse_message(request.body)
+    snd_msg = parse_message(request.data)
     print('snd_msg:\t', snd_msg)
     resp = get(f'http://{SITE_NAME}/api/stable/{snd_msg.source}/{snd_msg.content}').content
     print('resp:\t', resp)
