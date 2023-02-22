@@ -11,7 +11,7 @@ from wechatpy.exceptions import (
     InvalidAppIdException,
 )
 from itsdangerous import url_safe
-from requests import get
+import requests
 from os import getenv
 
 # TOKEN = os.getenv("WECHAT_TOKEN", "123456")
@@ -47,9 +47,10 @@ def send():
         'content': snd_msg.content
     })
     try:
-        resp = json.loads(get(f'http://{SITE_NAME}/api/{API_KEY}/{auth.dumps(s)}').content)['message']
+        resp = requests.get(f'http://{SITE_NAME}/api/{API_KEY}/{auth.dumps(s)}').content
+        resp = json.loads(resp)['message']
     except Exception as e:
-        resp = "API 失败: \n" + traceback.format_exc()
+        resp = "API 失败: \n" + traceback.format_exc() + '\n' + resp
     print('resp:\t', resp)
     reply = create_reply(resp, snd_msg)
     return reply.render()
