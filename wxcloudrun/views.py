@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import request, abort
+from flask import request
 import json
 from run import app
 import os
@@ -41,14 +41,13 @@ def send():
         snd_msg = parse_message(request.data)
     except KeyError:
         return ""
-    print('snd_msg:\t', snd_msg)
     s = json.dumps({
         'user_id': snd_msg.source,
         'type': 'text',
-        'mesg': snd_msg.content
+        'content': snd_msg.content
     })
     try:
-        resp = json.loads(get(f'http://{SITE_NAME}/api/{API_KEY}/{auth.dumps(s)}', timeout=600).content)['message']
+        resp = json.loads(get(f'http://{SITE_NAME}/api/{API_KEY}/{auth.dumps(s)}').content)['message']
     except Exception as e:
         resp = "API 失败: " + str(e)
     print('resp:\t', resp)
