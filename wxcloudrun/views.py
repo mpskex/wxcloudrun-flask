@@ -34,7 +34,7 @@ def send():
         'content': snd_msg.content
     })
     try:
-        resp = requests.get(f'http://{SITE_NAME}/api/{API_KEY}/{auth.dumps(s)}', headers={'host': 'baidu.com'}).content
+        resp = requests.get(f'http://{SITE_NAME}/api/{API_KEY}/{auth.dumps(s)}').content
         resp = json.loads(resp)['message']
     except Exception as e:
         resp = "API 失败: \n" + traceback.format_exc() + '\n\n' + str(type(resp)) + resp.decode('utf-8') + '\n\n' + str(s)
