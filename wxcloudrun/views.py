@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import request
 import json
 from run import app
-import os
+import traceback
 
 from wechatpy import parse_message, create_reply
 from wechatpy.utils import check_signature
@@ -49,7 +49,7 @@ def send():
     try:
         resp = json.loads(get(f'http://{SITE_NAME}/api/{API_KEY}/{auth.dumps(s)}').content)['message']
     except Exception as e:
-        resp = "API 失败: " + str(e)
+        resp = "API 失败: \n" + traceback.format_exc()
     print('resp:\t', resp)
     reply = create_reply(resp, snd_msg)
     return reply.render()
