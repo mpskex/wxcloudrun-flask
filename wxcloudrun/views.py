@@ -50,7 +50,7 @@ def send():
         resp = requests.get(f'http://{SITE_NAME}/api/{API_KEY}/{auth.dumps(s)}').content
         resp = json.loads(resp)['message']
     except Exception as e:
-        resp = "API 失败: \n" + traceback.format_exc() + '\n\n' + str(resp) + '\n\n' + str(s)
+        resp = "API 失败: \n" + traceback.format_exc() + '\n\n' + type(resp) + '\n\n' + str(s)
     print('resp:\t', resp)
     reply = create_reply(resp, snd_msg)
     return reply.render()
