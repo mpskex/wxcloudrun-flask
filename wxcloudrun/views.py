@@ -49,8 +49,8 @@ def send():
     })
     try:
         resp = json.loads(get(f'http://{SITE_NAME}/api/{API_KEY}/{auth.dumps(s)}', timeout=600).content)['message']
-    except:
-        resp = "API 失败: " + snd_msg.content
+    except Exception as e:
+        resp = "API 失败: " + str(e)
     print('resp:\t', resp)
     reply = create_reply(resp, snd_msg)
     return reply.render()
